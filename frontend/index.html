@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stockroom · Store Management</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231F7A6D'/%3E%3Cpath d='M9 12l7-4 7 4v8l-7 4-7-4z' fill='none' stroke='%23fff' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-dash" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></symbol>
+    <symbol id="i-box" viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.5a3.5 3.5 0 010 7"/><path d="M18 14.3c2.2.7 3.5 2.6 3.5 5.7"/></symbol>
+    <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2z"/><path d="M9 8h6M9 12h6"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6"/><path d="M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+    <symbol id="i-print" viewBox="0 0 24 24"><path d="M7 9V3h10v6"/><rect x="4" y="9" width="16" height="8" rx="2"/><path d="M7 14h10v7H7z"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></symbol>
+  </defs>
+</svg>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="mark"><svg class="ico"><use href="#i-box"/></svg></span>
+      <div><b>Stockroom</b><small>Store ledger</small></div>
+    </div>
+    <nav id="nav" aria-label="Main">
+      <a href="#/dashboard" data-route="dashboard"><svg class="ico"><use href="#i-dash"/></svg><span>Dashboard</span></a>
+      <a href="#/products" data-route="products"><svg class="ico"><use href="#i-box"/></svg><span>Products</span></a>
+      <a href="#/customers" data-route="customers"><svg class="ico"><use href="#i-users"/></svg><span>Customers</span></a>
+      <a href="#/sales" data-route="sales"><svg class="ico"><use href="#i-receipt"/></svg><span>Sales</span></a>
+    </nav>
+    <div class="conn" id="conn"><i></i><span>Connected</span></div>
+  </aside>
+
+  <main>
+    <header class="page-head">
+      <div>
+        <h1 id="pageTitle"></h1>
+        <p id="pageSub"></p>
+      </div>
+      <div id="pageActions"></div>
+    </header>
+    <section id="view" aria-live="polite"></section>
+  </main>
+</div>
+
+<dialog id="productDialog">
+  <form id="productForm" novalidate>
+    <h2 id="productDialogTitle">Add product</h2>
+    <div class="form-error" id="productError" role="alert" hidden></div>
+    <label>Product name
+      <input id="pName" name="name" maxlength="100" autocomplete="off" required>
+    </label>
+    <div class="row2">
+      <label>Price (USD)
+        <input id="pPrice" name="price" type="number" min="0" step="0.01" inputmode="decimal" required>
+      </label>
+      <label>Quantity
+        <input id="pQty" name="quantity" type="number" min="0" step="1" inputmode="numeric" required>
+      </label>
+    </div>
+    <div class="dialog-actions">
+      <button type="button" class="btn ghost" data-close>Cancel</button>
+      <button type="submit" class="btn primary" id="productSubmit">Save product</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="confirmDialog">
+  <div>
+    <h2 id="confirmTitle">Are you sure?</h2>
+    <p id="confirmText"></p>
+    <div class="dialog-actions">
+      <button type="button" class="btn ghost" data-close>Cancel</button>
+      <button type="button" class="btn danger" id="confirmOk">Delete</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="invoiceDialog">
+  <div id="invoiceBody"></div>
+  <div class="dialog-actions no-print">
+    <button type="button" class="btn ghost" data-close>Close</button>
+    <button type="button" class="btn primary" id="printInvoice"><svg class="ico"><use href="#i-print"/></svg>Print</button>
+  </div>
+</dialog>
+
+<div id="toasts" aria-live="polite"></div>
+<script src="js/app.js"></script>
+</body>
+</html>
